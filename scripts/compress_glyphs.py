@@ -11,8 +11,8 @@ def compress(source, destination):
     destination.mkdir(parents=True,exist_ok=True)
     plain=packed=files=0
     inventory=destination/'compressed-manifest.jsonl'
-    with inventory.open('w') as log:
-        for line in (source/'manifest.jsonl').open():
+    with inventory.open('w') as log, (source/'manifest.jsonl').open() as manifest:
+        for line in manifest:
             row=json.loads(line)
             data=(source/row['path']).read_bytes()
             encoded=gzip.compress(data,compresslevel=9,mtime=0)
