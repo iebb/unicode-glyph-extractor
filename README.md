@@ -171,6 +171,11 @@ treated as unavailable, not as a release. Stale beta files for a released versio
 are ignored. Draft-only assigned codepoints are red and explicitly labeled Draft
 in the collection website. Released characters' draft forms remain separate.
 
+GitHub can disable scheduled workflows in public repositories after 60 days
+without repository activity. If that occurs, reenable this workflow in Actions
+or run `gh workflow enable monthly.yml --repo iebb/unicode-glyph-extractor`.
+See [GitHub's schedule rules](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+
 The workflow hashes all inputs and extractor scripts, skips unchanged snapshots,
 and only pushes after inventory, identity, raster, whole-PDF and compression
 checks pass. Future chart layouts are not assumed to work: extraction or audit
