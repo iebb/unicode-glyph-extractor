@@ -38,6 +38,10 @@ jobs:
         run: pip install -r extractor/requirements.txt
       - name: Check version discovery and compression regressions
         run: python extractor/scripts/test_updates.py
+      - name: Check draft catalog and browser syntax
+        run: |
+          python collection/tools/test_catalog.py
+          node --input-type=module --check < collection/docs/app.js
       - name: Discover, extract, audit and compress official specimens
         run: python extractor/scripts/update_glyph_repo.py --repo collection --work "$RUNNER_TEMP/unicode-update" ${{ inputs.force && '--force' || '' }}
       - name: Commit verified collection and navigation
