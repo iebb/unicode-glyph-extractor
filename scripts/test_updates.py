@@ -8,9 +8,18 @@ import unittest
 from unittest.mock import patch
 import discover_unicode
 from compress_glyphs import compress
+from update_glyph_repo import source_signature
 
 
 class UpdateTests(unittest.TestCase):
+    def test_source_inventory_order_does_not_trigger_extraction(self):
+        files=[{'file':name,'url':'https://www.unicode.org/'+name,'bytes':100,'sha256':name} for name in ['CodeCharts.pdf','UnicodeData.txt']]
+        a={'unicode_version':'18.0.0','files':files}
+        b={'unicode_version':'18.0.0','files':list(reversed(files))}
+        self.assertEqual(source_signature(a),source_signature(b))
+        changed=json.loads(json.dumps(b));changed['files'][0]['sha256']='changed'
+        self.assertNotEqual(source_signature(a),source_signature(changed))
+
     def test_empty_draft_with_success_status_is_not_a_version(self):
         def read(url,optional=False):
             return 'final data files and charts for version 18.0.0' if 'latest' in url else '<html>This directory is currently empty.</html>'

@@ -17,6 +17,12 @@ from discover_unicode import discover
 SCRIPTS=Path(__file__).resolve().parent
 
 
+def source_signature(records):
+    if not records:return None
+    return (records['unicode_version'],tuple(sorted(
+        (row['file'],row['url'],row['bytes'],row['sha256']) for row in records['files'])))
+
+
 def run(name,*args):
     subprocess.run([sys.executable,str(SCRIPTS/name),*map(str,args)],check=True)
 
@@ -46,7 +52,7 @@ def main():
             '--sources',work/channel/'sources','--refresh')
         records=json.loads((source/'sources.json').read_text())
         fingerprints[channel]=records
-        if not args.force and previous.get(channel)==records and previous.get('extractor_sha256')==extractor_hash:
+        if not args.force and source_signature(previous.get(channel))==source_signature(records) and previous.get('extractor_sha256')==extractor_hash:
             print(f'{channel} sources unchanged',flush=True)
             continue
         output=work/channel/'output'
